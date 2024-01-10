@@ -1,0 +1,2 @@
+# DefenceFromDokdo
+for hackerton project
