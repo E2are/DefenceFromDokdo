@@ -6,25 +6,57 @@ using System.IO;
 
 public class Base : MonoBehaviour
 {
-    public int hp;
     public float fishCoin = 100;
     public float Base_hp;
-    public float max_hp=5f;
+    public float max_hp = 5f;
+    public int kill_cnt = 0;
     public Slider slider;
     public Text coin;
-    public bool lose=false;
+    public GameObject[] Uis;
+    public GameObject[] GameOver;
+    public bool lose = false;
 
     void Update()
     {
-        slider.value = Base_hp/max_hp;
-        coin.text = fishCoin.ToString(); 
+        slider.value = Base_hp / max_hp;
+        coin.text = fishCoin.ToString();
+        if (lose)
+        {
+            for (int i = 0; i < GameOver.Length; i++)
+            {
+                GameOver[i].SetActive(true);
+            }
+            for (int i = 0; i < Uis.Length; i++)
+            {
+                Uis[i].SetActive(false);
+            }
+
+        }
+        else
+        {
+            for (int i = 0; i < GameOver.Length; i++)
+            {
+                GameOver[i].SetActive(false);
+            }
+            for (int i = 0; i < Uis.Length; i++)
+            {
+                Uis[i].SetActive(true);
+            }
+        }
     }
-    void OnTriggerEnter2D(Collider2D other) {
-        if(other.gameObject.tag == "Enemy"){
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Enemy")
+        {
             Base_hp -= 1;
-            if(Base_hp<=0){
+            Destroy(other.gameObject);
+            GameManager.instance.qz.QuizUp();
+            if (Base_hp <= 0)
+            {
                 lose = true;
             }
+
+
         }
     }
 }

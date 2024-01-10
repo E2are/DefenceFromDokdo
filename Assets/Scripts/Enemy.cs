@@ -17,41 +17,46 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
-        anim =GetComponent<Animator>();
+        anim = GetComponent<Animator>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        transform.Translate(speed*-1,0f,0f);
-        switch(type){
+        transform.Translate(speed * -1, 0f, 0f);
+        switch (type)
+        {
             case 1:
-            Shoot_troop(GGuang(),2f);
-            break;
+                Shoot_troop(GGuang(), 2f);
+                break;
             case 2:
-            Shoot_troop(Cat(),2f);
-            break;
+                Shoot_troop(Cat(), 2f);
+                break;
             case 3:
-            Shoot_troop(gorilla(),2f);
-            break;
+                Shoot_troop(gorilla(), 2f);
+                break;
         }
-            
+
     }
 
-    void Shoot_troop(IEnumerator enu, float leng){
-        if(shoot){
-        StartCoroutine(enu);
-        shoot = !shoot;
-        len = leng;
+    void Shoot_troop(IEnumerator enu, float leng)
+    {
+        if (shoot)
+        {
+            StartCoroutine(enu);
+            shoot = !shoot;
+            len = leng;
         }
     }
 
 
     IEnumerator GGuang()
     {
-        while(true){
-            RaycastHit2D ray = Physics2D.Raycast(rigid.position,Vector3.right * -1,len,LayerMask.GetMask("Player"));
-            if(ray.collider != null){            
-                bullet_prefeb.GetComponent<Bullet>().dir = Vector3.right*-1;
+        while (true)
+        {
+            RaycastHit2D ray = Physics2D.Raycast(rigid.position, Vector3.right * -1, len, LayerMask.GetMask("Turret"));
+            if (ray.collider != null)
+            {
+                bullet_prefeb.GetComponent<Bullet>().dir = Vector3.right * -1;
                 bullet_prefeb.GetComponent<Bullet>().damage = 3;
                 bullet_prefeb.GetComponent<Bullet>().speed = 5f;
                 bullet_prefeb.GetComponent<Bullet>().is_enemy_bullet = true;
@@ -62,35 +67,41 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator Cat()
     {
-        while(true){
-            RaycastHit2D ray = Physics2D.Raycast(rigid.position,Vector3.right* -1,len,LayerMask.GetMask("Player"));
-            if(ray.collider != null){    
-                anim.SetBool("Attack",true);
-                bullet_prefeb.GetComponent<Bullet>().dir = Vector3.right*-1;
+        while (true)
+        {
+            RaycastHit2D ray = Physics2D.Raycast(rigid.position, Vector3.right * -1, len, LayerMask.GetMask("Turret"));
+            if (ray.collider != null)
+            {
+                anim.SetBool("Attack", true);
+                bullet_prefeb.GetComponent<Bullet>().dir = Vector3.right * -1;
                 bullet_prefeb.GetComponent<Bullet>().damage = 4;
                 bullet_prefeb.GetComponent<Bullet>().speed = 5f;
                 bullet_prefeb.GetComponent<Bullet>().is_enemy_bullet = true;
                 Instantiate(bullet_prefeb, this.transform.position, Quaternion.identity);
             }
-            else{
-                anim.SetBool("Attack",false);
+            else
+            {
+                anim.SetBool("Attack", false);
             }
             yield return new WaitForSeconds(0.2f);
         }
     }
     IEnumerator gorilla()
     {
-        while(true){
-            RaycastHit2D ray = Physics2D.Raycast(rigid.position,Vector3.right,len,LayerMask.GetMask("Player"));
-            if(ray.collider != null){    
+        while (true)
+        {
+            RaycastHit2D ray = Physics2D.Raycast(rigid.position, Vector3.right * -1, len, LayerMask.GetMask("Turret"));
+            if (ray.collider != null)
+            {
                 anim.SetTrigger("Attack");
-                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position, new Vector2(5,3), 0);
+                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position, new Vector2(5, 3), 0);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (collider.tag == "Player")
                     {
                         collider.GetComponent<Guard>().hp -= 10;
-                        if(collider.GetComponent<Guard>().hp <=0){
+                        if (collider.GetComponent<Guard>().hp <= 0)
+                        {
                             Destroy(collider.gameObject);
                         }
                     }

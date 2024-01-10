@@ -17,45 +17,50 @@ public class Guard : MonoBehaviour
     void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
-        anim =GetComponent<Animator>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        switch(type){
+        switch (type)
+        {
             case 1:
-            Shoot_troop(Gangchi(),6f);
-            break;
+                Shoot_troop(Gangchi(), 7f);
+                break;
             case 2:
-            Shoot_troop(Btsea(),2f);
-            break;
+                Shoot_troop(Btsea(), 2f);
+                break;
             case 3:
-            Shoot_troop(Anchovy(),5f);
-            break;
+                Shoot_troop(Anchovy(), 11f);
+                break;
             case 4:
-            Shoot_troop(blowfish(),2f);
-            break;
+                Shoot_troop(blowfish(), 3f);
+                break;
         }
-            
+
     }
 
-    void Shoot_troop(IEnumerator enu, float leng){
-        if(shoot){
-        StartCoroutine(enu);
-        shoot = !shoot;
-        len = leng;
+    void Shoot_troop(IEnumerator enu, float leng)
+    {
+        if (shoot)
+        {
+            StartCoroutine(enu);
+            shoot = !shoot;
+            len = leng;
         }
     }
 
 
     IEnumerator Gangchi()
     {
-        while(true){
-            RaycastHit2D ray = Physics2D.Raycast(rigid.position,Vector3.right,len,LayerMask.GetMask("Enemy"));
-            if(ray.collider != null){            
+        while (true)
+        {
+            RaycastHit2D ray = Physics2D.Raycast(rigid.position, Vector3.right, len, LayerMask.GetMask("Enemy"));
+            if (ray.collider != null)
+            {
                 bullet_prefeb.GetComponent<Bullet>().dir = Vector3.right;
-                bullet_prefeb.GetComponent<Bullet>().damage = 5;
+                bullet_prefeb.GetComponent<Bullet>().damage = 3;
                 bullet_prefeb.GetComponent<Bullet>().speed = 5f;
                 bullet_prefeb.GetComponent<Bullet>().is_enemy_bullet = false;
                 Instantiate(bullet_prefeb, this.transform.position, quaternion.identity);
@@ -65,9 +70,11 @@ public class Guard : MonoBehaviour
     }
     IEnumerator Anchovy()
     {
-        while(true){
-            RaycastHit2D ray = Physics2D.Raycast(rigid.position,Vector3.right,len,LayerMask.GetMask("Enemy"));
-            if(ray.collider != null){    
+        while (true)
+        {
+            RaycastHit2D ray = Physics2D.Raycast(rigid.position, Vector3.right, len, LayerMask.GetMask("Enemy"));
+            if (ray.collider != null)
+            {
                 bullet_prefeb.GetComponent<Bullet>().dir = Vector3.right;
                 bullet_prefeb.GetComponent<Bullet>().damage = 2;
                 bullet_prefeb.GetComponent<Bullet>().speed = 5f;
@@ -79,35 +86,43 @@ public class Guard : MonoBehaviour
     }
     IEnumerator Btsea()
     {
-        while(true){
-            RaycastHit2D ray = Physics2D.Raycast(rigid.position,Vector3.right,len,LayerMask.GetMask("Enemy"));
-            if(ray.collider != null){    
-                anim.SetBool("Attack",true);
+        while (true)
+        {
+            RaycastHit2D ray = Physics2D.Raycast(rigid.position, Vector3.right, len, LayerMask.GetMask("Enemy"));
+            if (ray.collider != null)
+            {
+                anim.SetBool("Attack", true);
                 bullet_prefeb.GetComponent<Bullet>().dir = Vector3.right;
                 bullet_prefeb.GetComponent<Bullet>().damage = 4;
                 bullet_prefeb.GetComponent<Bullet>().speed = 5f;
                 bullet_prefeb.GetComponent<Bullet>().is_enemy_bullet = false;
                 Instantiate(bullet_prefeb, this.transform.position, quaternion.identity);
             }
-            else{
-                anim.SetBool("Attack",false);
+            else
+            {
+                anim.SetBool("Attack", false);
             }
             yield return new WaitForSeconds(0.2f);
         }
     }
     IEnumerator blowfish()
     {
-        while(true){
-            RaycastHit2D ray = Physics2D.Raycast(rigid.position,Vector3.right,len,LayerMask.GetMask("Enemy"));
-            if(ray.collider != null){    
+        while (true)
+        {
+            RaycastHit2D ray = Physics2D.Raycast(rigid.position, Vector3.right, len, LayerMask.GetMask("Enemy"));
+            if (ray.collider != null)
+            {
                 anim.SetTrigger("Attack");
-                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position, new Vector2(3,3), 0);
+                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position, new Vector2(3, 3), 0);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (collider.tag == "Enemy")
                     {
-                        collider.GetComponent<Enemy>().hp -= 5;
-                        if(collider.GetComponent<Enemy>().hp <=0){
+                        collider.GetComponent<Enemy>().hp -= 10;
+                        if (collider.GetComponent<Enemy>().hp <= 0)
+                        {
+                            GameManager.instance.bs.fishCoin += collider.GetComponent<Enemy>().type * 20;
+                            GameManager.instance.bs.kill_cnt++;
                             Destroy(collider.gameObject);
                         }
                     }

@@ -6,20 +6,19 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public int stage_cnt=1;
-    
+    public int stage_cnt = 1;
+
     public Slider slider;
-    public Text Score_text; 
     public Base bs;
-    void Awake() 
+    public Quiz qz;
+    void Awake()
     {
         instance = this;
     }
     void Update()
     {
-        Score_text.text = "Stage : " + stage_cnt.ToString();
-        
+
     }
 
-    
+
 }
